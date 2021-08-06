@@ -37,10 +37,16 @@ pub enum Status {
 #[derive(Error, Debug)]
 pub enum HostError {
     #[error("Failed to list hosts: {0}")]
-    FailedList(#[from] sqlx::Error),
+    List(#[from] sqlx::Error),
 
     #[error("Failed to add host: {0}, error: {1}")]
-    FailedAdd(String, sqlx::Error),
+    Add(String, sqlx::Error),
+
+    #[error("Can't find host: {0}, error: {1}")]
+    Find(Uuid, sqlx::Error),
+
+    #[error("Can't update host: {0}, error: {1}")]
+    Updated(Uuid, sqlx::Error),
 }
 
 pub async fn list(pool: &PgPool) -> Result<Vec<Host>, HostError> {
@@ -52,7 +58,7 @@ SELECT id, name, address, port, status as "status: _", host_user, password FROM 
     )
     .fetch_all(pool)
     .await
-    .map_err(HostError::FailedList)?;
+    .map_err(HostError::List)?;
 
     Ok(hosts)
 }
@@ -73,7 +79,42 @@ RETURNING id
     )
     .fetch_one(pool)
     .await
-    .map_err(|e| HostError::FailedAdd(host.name.to_owned(), e))?;
+    .map_err(|e| HostError::Add(host.name.to_owned(), e))?;
 
     Ok(rec.id)
+}
+
+pub async fn by_id(pool: &PgPool, host_id: &Uuid) -> Result<Host, HostError> {
+    let host = sqlx::query_as!(
+        Host,
+        r#"
+SELECT id, name, address, port, status as "status: _", host_user, password
+FROM hosts
+WHERE id = $1
+        "#,
+        host_id
+    )
+    .fetch_one(pool)
+    .await
+    .map_err(|e| HostError::Find(*host_id, e))?;
+
+    Ok(host)
+}
+
+pub async fn update_status(pool: &PgPool, host_id: Uuid, status: Status) -> anyhow::Result<bool> {
+    let row_affected = sqlx::query!(
+        r#"
+UPDATE hosts
+SET status = $1
+WHERE id = $2
+        "#,
+        status.to_string(),
+        host_id
+    )
+    .execute(pool)
+    .await
+    .map_err(|e| HostError::Updated(host_id, e))?
+    .rows_affected();
+
+    Ok(row_affected > 0)
 }

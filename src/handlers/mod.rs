@@ -7,11 +7,15 @@ use serde_json::json;
 use thiserror::Error;
 use uuid::Uuid;
 
+mod ansible;
 pub mod hosts;
 mod models;
 
 pub fn hosts() -> BoxRoute<Body> {
-    route("/", get(hosts::list).post(hosts::add)).boxed()
+    route("/", get(hosts::list).post(hosts::add))
+        .route("/:id", get(hosts::get))
+        .route("/:id/install", post(hosts::install))
+        .boxed()
 }
 
 pub struct ApiResponse<T> {
@@ -41,14 +45,14 @@ pub enum ServerError {
     InternalError,
     #[error("Validation error")]
     #[serde(rename(serialize = "validation error"))]
-    ValidationError,
+    ValidationError(String),
 }
 
 impl IntoResponse for ServerError {
     fn into_response(self) -> Response<Body> {
         let code = match self {
             ServerError::InternalError => StatusCode::INTERNAL_SERVER_ERROR,
-            ServerError::ValidationError => StatusCode::CONFLICT,
+            ServerError::ValidationError(_) => StatusCode::CONFLICT,
         };
 
         let mut response = response::Json(json!({
