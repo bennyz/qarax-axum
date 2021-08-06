@@ -12,7 +12,7 @@ pub async fn list(
     Extension(env): Extension<Environment>,
 ) -> Result<ApiResponse<Vec<Host>>, ServerError> {
     let hosts = host_model::list(env.db()).await.map_err(|e| {
-        tracing::error!("Failed to add host {}", e);
+        tracing::error!("Failed to list hosts, error: {}", e);
         ServerError::InternalError
     })?;
 

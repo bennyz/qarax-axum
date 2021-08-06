@@ -54,6 +54,115 @@
       ]
     }
   },
+  "99d6fef0b3405828251be9a841af7d9173090770bf4ee6d09f985f51afa89fea": {
+    "query": "\nINSERT INTO storage (name, status, storage_type, config)\nVALUES ( $1, $2, $3, $4)\nRETURNING id\n        ",
+    "describe": {
+      "columns": [
+        {
+          "ordinal": 0,
+          "name": "id",
+          "type_info": "Uuid"
+        }
+      ],
+      "parameters": {
+        "Left": [
+          "Varchar",
+          "Varchar",
+          "Varchar",
+          "Jsonb"
+        ]
+      },
+      "nullable": [
+        false
+      ]
+    }
+  },
+  "c7e806bfde9604aafc55c1247196e4de668e7e82a42046cab71beb7c58df9499": {
+    "query": "\nSELECT id, name, status as \"status: _\", storage_type as \"storage_type: _\", config as \"config: Json<StorageConfig>\" \nFROM storage\nWHERE id = $1\n        ",
+    "describe": {
+      "columns": [
+        {
+          "ordinal": 0,
+          "name": "id",
+          "type_info": "Uuid"
+        },
+        {
+          "ordinal": 1,
+          "name": "name",
+          "type_info": "Varchar"
+        },
+        {
+          "ordinal": 2,
+          "name": "status: _",
+          "type_info": "Varchar"
+        },
+        {
+          "ordinal": 3,
+          "name": "storage_type: _",
+          "type_info": "Varchar"
+        },
+        {
+          "ordinal": 4,
+          "name": "config: Json<StorageConfig>",
+          "type_info": "Jsonb"
+        }
+      ],
+      "parameters": {
+        "Left": [
+          "Uuid"
+        ]
+      },
+      "nullable": [
+        false,
+        false,
+        false,
+        false,
+        false
+      ]
+    }
+  },
+  "d110072da939f046c6f28a31078ed428880d09dd2980be69af0dfd5b09d9d650": {
+    "query": "\nSELECT id, name, status as \"status: _\", storage_type as \"storage_type: _\", config as \"config: Json<StorageConfig>\" \nFROM storage\n        ",
+    "describe": {
+      "columns": [
+        {
+          "ordinal": 0,
+          "name": "id",
+          "type_info": "Uuid"
+        },
+        {
+          "ordinal": 1,
+          "name": "name",
+          "type_info": "Varchar"
+        },
+        {
+          "ordinal": 2,
+          "name": "status: _",
+          "type_info": "Varchar"
+        },
+        {
+          "ordinal": 3,
+          "name": "storage_type: _",
+          "type_info": "Varchar"
+        },
+        {
+          "ordinal": 4,
+          "name": "config: Json<StorageConfig>",
+          "type_info": "Jsonb"
+        }
+      ],
+      "parameters": {
+        "Left": []
+      },
+      "nullable": [
+        false,
+        false,
+        false,
+        false,
+        false
+      ]
+    }
+  },
   "d5bfcdb696ac060779cacd9b7ecfb7d814a0e5f2e44b2d289359c53681db1ff4": {
     "query": "\nSELECT id, name, address, port, status as \"status: _\", host_user, password\nFROM hosts\nWHERE id = $1\n        ",
     "describe": {

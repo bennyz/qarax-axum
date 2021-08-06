@@ -10,11 +10,18 @@ use uuid::Uuid;
 mod ansible;
 pub mod hosts;
 mod models;
+pub mod storage;
 
 pub fn hosts() -> BoxRoute<Body> {
     route("/", get(hosts::list).post(hosts::add))
         .route("/:id", get(hosts::get))
         .route("/:id/install", post(hosts::install))
+        .boxed()
+}
+
+pub fn storage() -> BoxRoute<Body> {
+    route("/", get(storage::list).post(storage::add))
+        .route("/:id", get(storage::get))
         .boxed()
 }
 

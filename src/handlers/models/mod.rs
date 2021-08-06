@@ -6,3 +6,4 @@ use strum_macros::{Display, EnumString};
 use thiserror::Error;
 
 pub mod hosts;
+pub mod storage;
