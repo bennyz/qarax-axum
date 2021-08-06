@@ -1,17 +1,9 @@
 use crate::env::Environment;
 
-use axum::{
-    body::{Body, BoxBody},
-    extract::Extension,
-    prelude::*,
-    response::IntoResponse,
-    response::Json,
-    routing::{BoxRoute, Route},
-    AddExtensionLayer,
-};
+use axum::{body::Body, extract::Extension, prelude::*, response::IntoResponse, routing::BoxRoute};
 use http::{Response, StatusCode};
 use serde::Serialize;
-use serde_json::{json, Value};
+use serde_json::json;
 use thiserror::Error;
 use uuid::Uuid;
 
@@ -19,7 +11,7 @@ pub mod hosts;
 mod models;
 
 pub fn hosts() -> BoxRoute<Body> {
-    route("/", get(hosts::list)).boxed()
+    route("/", get(hosts::list).post(hosts::add)).boxed()
 }
 
 pub struct ApiResponse<T> {
