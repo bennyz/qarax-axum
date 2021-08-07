@@ -13,15 +13,15 @@ mod models;
 pub mod storage;
 
 pub fn hosts() -> BoxRoute<Body> {
-    route("/hosts", get(hosts::list).post(hosts::add))
-        .route("/:id", get(hosts::get))
+    route("/:id", get(hosts::get))
         .route("/:id/install", post(hosts::install))
+        .route("/", get(hosts::list).post(hosts::add))
         .boxed()
 }
 
 pub fn storage() -> BoxRoute<Body> {
-    route("/", get(storage::list).post(storage::add))
-        .route("/:id", get(storage::get))
+    route("/:id", get(storage::get))
+        .route("/", get(storage::list).post(storage::add))
         .boxed()
 }
 
