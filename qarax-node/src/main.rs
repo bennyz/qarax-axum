@@ -5,7 +5,6 @@ use crate::vmm_service::VmmService;
 use clap::Clap;
 use std::net::SocketAddr;
 use std::time::Duration;
-use tonic::service;
 use tonic::transport::Server;
 use tonic_health::server::HealthReporter;
 use vmm_service::node::node_server::NodeServer;
@@ -40,8 +39,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     Server::builder()
         .tcp_keepalive(Some(Duration::from_secs(60)))
-        .add_service(NodeServer::new(vmm_service::VmmService::default()))
         .add_service(health_service)
+        .add_service(NodeServer::new(vmm_service::VmmService::default()))
         .serve(addr)
         .await?;
 
