@@ -1,6 +1,7 @@
 use std::collections::BTreeMap;
 
 use crate::handlers::ansible::AnsibleCommand;
+use crate::handlers::models::hosts::HostError;
 
 use super::models::hosts::{NewHost, Status};
 use super::*;
@@ -11,9 +12,10 @@ use models::hosts::Host;
 pub async fn list(
     Extension(env): Extension<Environment>,
 ) -> Result<ApiResponse<Vec<Host>>, ServerError> {
+    tracing::info!("list works");
     let hosts = host_model::list(env.db()).await.map_err(|e| {
         tracing::error!("Failed to list hosts, error: {}", e);
-        ServerError::InternalError
+        ServerError::Internal
     })?;
 
     Ok(ApiResponse {
@@ -28,7 +30,7 @@ pub async fn add(
 ) -> Result<ApiResponse<Uuid>, ServerError> {
     let host_id = host_model::add(env.db(), &host).await.map_err(|e| {
         tracing::error!("Failed to add host {}", e);
-        ServerError::InternalError
+        ServerError::Internal
     })?;
 
     Ok(ApiResponse {
@@ -43,7 +45,13 @@ pub async fn get(
 ) -> Result<ApiResponse<Host>, ServerError> {
     let host = host_model::by_id(env.db(), &host_id).await.map_err(|e| {
         tracing::error!("Failed to find host: {}, error:{}", host_id, e);
-        ServerError::InternalError
+
+        match e {
+            HostError::Find(id, sqlx::Error::RowNotFound) => {
+                ServerError::EntityNotFound(id.to_string())
+            }
+            _ => ServerError::Internal,
+        }
     })?;
 
     Ok(ApiResponse {
@@ -60,14 +68,14 @@ pub async fn install(
         host
     } else {
         tracing::error!("Failed to find host: {}", host_id);
-        return Err(ServerError::InternalError);
+        return Err(ServerError::Internal);
     };
 
     host_model::update_status(env.db(), host_id, Status::Installing)
         .await
         .map_err(|e| {
             tracing::error!("Failed to update host: {}, error:{}", host_id, e);
-            ServerError::InternalError
+            ServerError::Internal
         })?;
 
     let mut extra_params = BTreeMap::new();

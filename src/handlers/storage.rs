@@ -10,7 +10,7 @@ pub async fn list(
 ) -> Result<ApiResponse<Vec<Storage>>, ServerError> {
     let storages = storage_model::list(env.db()).await.map_err(|e| {
         tracing::error!("Failed to list storages, error: {}", e);
-        ServerError::InternalError
+        ServerError::Internal
     })?;
 
     Ok(ApiResponse {
@@ -25,7 +25,7 @@ pub async fn add(
 ) -> Result<ApiResponse<Uuid>, ServerError> {
     let storage_id = storage_model::add(env.db(), &storage).await.map_err(|e| {
         tracing::error!("Can't add storage: {}", e);
-        ServerError::InternalError
+        ServerError::Internal
     })?;
 
     Ok(ApiResponse {
@@ -42,7 +42,7 @@ pub async fn get(
         .await
         .map_err(|e| {
             tracing::error!("Can't find storage, error: {}", e);
-            ServerError::InternalError
+            ServerError::Internal
         })?;
 
     Ok(ApiResponse {

@@ -13,7 +13,7 @@ mod models;
 pub mod storage;
 
 pub fn hosts() -> BoxRoute<Body> {
-    route("/", get(hosts::list).post(hosts::add))
+    route("/hosts", get(hosts::list).post(hosts::add))
         .route("/:id", get(hosts::get))
         .route("/:id/install", post(hosts::install))
         .boxed()
@@ -49,17 +49,21 @@ where
 pub enum ServerError {
     #[error("Internal error")]
     #[serde(rename(serialize = "internal error"))]
-    InternalError,
+    Internal,
     #[error("Validation error")]
     #[serde(rename(serialize = "validation error"))]
-    ValidationError(String),
+    Validation(String),
+    #[error("Entity not found")]
+    #[serde(rename(serialize = "entity_not_found"))]
+    EntityNotFound(String),
 }
 
 impl IntoResponse for ServerError {
     fn into_response(self) -> Response<Body> {
         let code = match self {
-            ServerError::InternalError => StatusCode::INTERNAL_SERVER_ERROR,
-            ServerError::ValidationError(_) => StatusCode::CONFLICT,
+            ServerError::Internal => StatusCode::INTERNAL_SERVER_ERROR,
+            ServerError::Validation(_) => StatusCode::CONFLICT,
+            Self::EntityNotFound(_) => StatusCode::NOT_FOUND,
         };
 
         let mut response = response::Json(json!({
