@@ -1,4 +1,5 @@
 use axum::{prelude::*, AddExtensionLayer};
+use clap::Clap;
 use dotenv::dotenv;
 use std::{error::Error, net::SocketAddr};
 
@@ -7,8 +8,20 @@ mod env;
 mod handlers;
 mod routes;
 
+#[derive(Clap, Debug)]
+#[clap(
+    name = "qarax",
+    rename_all = "kebab-case",
+    rename_all_env = "screaming-snake"
+)]
+pub struct Args {
+    #[clap(short, long, default_value = "3000", env)]
+    port: u16,
+}
+
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
+    let args = Args::parse();
     dotenv().ok();
 
     if std::env::var("RUST_LOG").is_err() {
@@ -33,7 +46,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
         .layer(AddExtensionLayer::new(environment))
         .layer(tower_http::trace::TraceLayer::new_for_http());
 
-    let addr = SocketAddr::from(([127, 0, 0, 1], 3000));
+    let addr = SocketAddr::from(([127, 0, 0, 1], args.port));
     tracing::info!("listening on {}", addr);
     axum::Server::bind(&addr)
         .serve(app.into_make_service())
