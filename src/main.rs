@@ -27,6 +27,8 @@ async fn main() -> Result<(), Box<dyn Error>> {
     let app = route("/", get(|| async { "hello" }))
         .nest("/hosts", handlers::hosts())
         .nest("/storage", handlers::storage())
+        .nest("/drives", handlers::drives())
+        .nest("/kernels", handlers::kernels())
         .layer(AddExtensionLayer::new(environment))
         .layer(tower_http::trace::TraceLayer::new_for_http());
 

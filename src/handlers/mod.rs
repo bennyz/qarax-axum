@@ -8,7 +8,9 @@ use thiserror::Error;
 use uuid::Uuid;
 
 mod ansible;
+pub mod drives;
 pub mod hosts;
+pub mod kernels;
 mod models;
 pub mod storage;
 
@@ -22,6 +24,18 @@ pub fn hosts() -> BoxRoute<Body> {
 pub fn storage() -> BoxRoute<Body> {
     route("/:id", get(storage::get))
         .route("/", get(storage::list).post(storage::add))
+        .boxed()
+}
+
+pub fn drives() -> BoxRoute<Body> {
+    route("/:id", get(drives::get))
+        .route("/", get(drives::list).post(drives::add))
+        .boxed()
+}
+
+pub fn kernels() -> BoxRoute<Body> {
+    route("/:id", get(kernels::get))
+        .route("/", get(kernels::list).post(kernels::add))
         .boxed()
 }
 
