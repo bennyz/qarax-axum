@@ -6,7 +6,6 @@ use clap::Clap;
 use std::net::SocketAddr;
 use std::time::Duration;
 use tonic::transport::Server;
-use tonic_health::server::HealthReporter;
 use vmm_service::node::node_server::NodeServer;
 
 #[derive(Clap, Debug)]
