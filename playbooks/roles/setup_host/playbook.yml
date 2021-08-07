@@ -1,0 +1,6 @@
+- hosts: all
+  tasks:
+    - name: install packages
+      include: tasks/install.yml
+    - name: setup network
+      include: tasks/setup_network.yml

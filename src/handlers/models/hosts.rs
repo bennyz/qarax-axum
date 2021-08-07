@@ -108,7 +108,7 @@ UPDATE hosts
 SET status = $1
 WHERE id = $2
         "#,
-        status.to_string(),
+        status as Status,
         host_id
     )
     .execute(pool)
