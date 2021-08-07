@@ -1,9 +1,13 @@
 mod vmm_service;
 
+use crate::vmm_service::VmmService;
+
 use clap::Clap;
 use std::net::SocketAddr;
 use std::time::Duration;
+use tonic::service;
 use tonic::transport::Server;
+use tonic_health::server::HealthReporter;
 use vmm_service::node::node_server::NodeServer;
 
 #[derive(Clap, Debug)]
@@ -19,19 +23,25 @@ pub struct Args {
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let args = Args::parse();
     if std::env::var("RUST_LOG").is_err() {
         std::env::set_var("RUST_LOG", "qarax-node=debug")
     }
 
     tracing_subscriber::fmt::fmt().init();
 
-    let args = Args::parse();
+    let (mut health_reporter, health_service) = tonic_health::server::health_reporter();
+    health_reporter
+        .set_serving::<NodeServer<VmmService>>()
+        .await;
+
     tracing::info!("Starting on port {}", args.port);
     let addr = SocketAddr::from(([127, 0, 0, 1], args.port));
 
     Server::builder()
         .tcp_keepalive(Some(Duration::from_secs(60)))
-        .add_service(NodeServer::new(vmm_service::VmService::default()))
+        .add_service(NodeServer::new(vmm_service::VmmService::default()))
+        .add_service(health_service)
         .serve(addr)
         .await?;
 

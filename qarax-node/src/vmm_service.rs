@@ -9,10 +9,10 @@ pub(crate) mod node {
 }
 
 #[derive(Debug, Default)]
-pub struct VmService {}
+pub struct VmmService {}
 
 #[tonic::async_trait]
-impl Node for VmService {
+impl Node for VmmService {
     async fn start_vm(&self, request: Request<VmConfig>) -> Result<Response<VmConfig>, Status> {
         unimplemented!()
     }
