@@ -110,6 +110,34 @@
       ]
     }
   },
+  "78cd637b2de85d5e474708e1f234b35ca6723a0e156daf245d382ffda2001064": {
+    "query": "\nINSERT INTO vms (name, status, vcpu, memory, kernel, network_mode, ip_address, mac_address, kernel_params)\nVALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)\nRETURNING id\n        ",
+    "describe": {
+      "columns": [
+        {
+          "ordinal": 0,
+          "name": "id",
+          "type_info": "Uuid"
+        }
+      ],
+      "parameters": {
+        "Left": [
+          "Varchar",
+          "Int4",
+          "Int4",
+          "Int4",
+          "Uuid",
+          "Varchar",
+          "Varchar",
+          "Varchar",
+          "Varchar"
+        ]
+      },
+      "nullable": [
+        false
+      ]
+    }
+  },
   "80cbecf089cb483c225eb79c4284a460ff34ff87fbb069cccecc2e657ea2e63a": {
     "query": "\nSELECT id, name, status as \"status: _\", readonly, rootfs, storage_id\nFROM drives\n        ",
     "describe": {
@@ -207,6 +235,84 @@
         ]
       },
       "nullable": [
+        false
+      ]
+    }
+  },
+  "9fa08c89958adf399ccd08abe4e103c1ab31bd8dcbac2e058ec22eafadaef77c": {
+    "query": "\nSELECT id, name, status as \"status: _\", host_id, vcpu, memory, ip_address, mac_address, network_mode as \"network_mode: _\", kernel_params, kernel\nFROM vms\n        ",
+    "describe": {
+      "columns": [
+        {
+          "ordinal": 0,
+          "name": "id",
+          "type_info": "Uuid"
+        },
+        {
+          "ordinal": 1,
+          "name": "name",
+          "type_info": "Varchar"
+        },
+        {
+          "ordinal": 2,
+          "name": "status: _",
+          "type_info": "Int4"
+        },
+        {
+          "ordinal": 3,
+          "name": "host_id",
+          "type_info": "Uuid"
+        },
+        {
+          "ordinal": 4,
+          "name": "vcpu",
+          "type_info": "Int4"
+        },
+        {
+          "ordinal": 5,
+          "name": "memory",
+          "type_info": "Int4"
+        },
+        {
+          "ordinal": 6,
+          "name": "ip_address",
+          "type_info": "Varchar"
+        },
+        {
+          "ordinal": 7,
+          "name": "mac_address",
+          "type_info": "Varchar"
+        },
+        {
+          "ordinal": 8,
+          "name": "network_mode: _",
+          "type_info": "Varchar"
+        },
+        {
+          "ordinal": 9,
+          "name": "kernel_params",
+          "type_info": "Varchar"
+        },
+        {
+          "ordinal": 10,
+          "name": "kernel",
+          "type_info": "Uuid"
+        }
+      ],
+      "parameters": {
+        "Left": []
+      },
+      "nullable": [
+        false,
+        false,
+        false,
+        true,
+        false,
+        false,
+        true,
+        true,
+        false,
+        false,
         false
       ]
     }
@@ -435,6 +541,86 @@
         ]
       },
       "nullable": []
+    }
+  },
+  "e1b81ed79f8e4b07b3d3a15b2c9d14fc8c96748280bba782aca15e3efa974c3b": {
+    "query": "\nSELECT id, name, status as \"status: _\", host_id, vcpu, memory, ip_address, mac_address, network_mode as \"network_mode: _\", kernel_params, kernel\nFROM vms\nWHERE id = $1\n        ",
+    "describe": {
+      "columns": [
+        {
+          "ordinal": 0,
+          "name": "id",
+          "type_info": "Uuid"
+        },
+        {
+          "ordinal": 1,
+          "name": "name",
+          "type_info": "Varchar"
+        },
+        {
+          "ordinal": 2,
+          "name": "status: _",
+          "type_info": "Int4"
+        },
+        {
+          "ordinal": 3,
+          "name": "host_id",
+          "type_info": "Uuid"
+        },
+        {
+          "ordinal": 4,
+          "name": "vcpu",
+          "type_info": "Int4"
+        },
+        {
+          "ordinal": 5,
+          "name": "memory",
+          "type_info": "Int4"
+        },
+        {
+          "ordinal": 6,
+          "name": "ip_address",
+          "type_info": "Varchar"
+        },
+        {
+          "ordinal": 7,
+          "name": "mac_address",
+          "type_info": "Varchar"
+        },
+        {
+          "ordinal": 8,
+          "name": "network_mode: _",
+          "type_info": "Varchar"
+        },
+        {
+          "ordinal": 9,
+          "name": "kernel_params",
+          "type_info": "Varchar"
+        },
+        {
+          "ordinal": 10,
+          "name": "kernel",
+          "type_info": "Uuid"
+        }
+      ],
+      "parameters": {
+        "Left": [
+          "Uuid"
+        ]
+      },
+      "nullable": [
+        false,
+        false,
+        false,
+        true,
+        false,
+        false,
+        true,
+        true,
+        false,
+        false,
+        false
+      ]
     }
   },
   "e7db70043945c347a36d423037eec73eae0eba61c2c485bab6a98da7e775c7ec": {

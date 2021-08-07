@@ -29,6 +29,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
         .nest("/storage", handlers::storage())
         .nest("/drives", handlers::drives())
         .nest("/kernels", handlers::kernels())
+        .nest("/vms", handlers::vms())
         .layer(AddExtensionLayer::new(environment))
         .layer(tower_http::trace::TraceLayer::new_for_http());
 

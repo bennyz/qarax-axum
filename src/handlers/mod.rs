@@ -13,6 +13,7 @@ pub mod hosts;
 pub mod kernels;
 mod models;
 pub mod storage;
+pub mod vms;
 
 pub fn hosts() -> BoxRoute<Body> {
     route("/:id", get(hosts::get))
@@ -36,6 +37,12 @@ pub fn drives() -> BoxRoute<Body> {
 pub fn kernels() -> BoxRoute<Body> {
     route("/:id", get(kernels::get))
         .route("/", get(kernels::list).post(kernels::add))
+        .boxed()
+}
+
+pub fn vms() -> BoxRoute<Body> {
+    route("/:id", get(vms::get))
+        .route("/", get(vms::list).post(vms::add))
         .boxed()
 }
 
