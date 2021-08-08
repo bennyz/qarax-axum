@@ -26,6 +26,12 @@ impl Node for VmmService {
     }
 
     async fn health_check(&self, request: Request<()>) -> Result<Response<NodeResponse>, Status> {
-        unimplemented!()
+        tracing::debug!("Got a request: {:?}", request);
+
+        let response = NodeResponse {
+            status: NodeStatus::Success as i32,
+        };
+
+        Ok(Response::new(response))
     }
 }

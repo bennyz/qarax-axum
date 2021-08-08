@@ -1,13 +1,17 @@
 use std::collections::BTreeMap;
+use std::net::SocketAddr;
 
 use crate::handlers::ansible::AnsibleCommand;
 use crate::handlers::models::hosts::HostError;
+use rpc::node::Status as NodeStatus;
 
 use super::models::hosts::{NewHost, Status};
+use super::rpc::client::Client;
 use super::*;
 use axum::extract::{Json, Path};
 use models::hosts as host_model;
 use models::hosts::Host;
+use tonic::Request;
 
 pub async fn list(
     Extension(env): Extension<Environment>,
@@ -108,4 +112,38 @@ pub async fn install(
         code: StatusCode::ACCEPTED,
         data: String::from("started"),
     })
+}
+
+pub async fn health_check(
+    Extension(env): Extension<Environment>,
+    Path(host_id): Path<Uuid>,
+) -> Result<ApiResponse<String>, ServerError> {
+    let host = if let Ok(host) = host_model::by_id(env.db(), &host_id).await {
+        host
+    } else {
+        tracing::error!("Failed to find host: {}", host_id);
+        return Err(ServerError::Internal);
+    };
+
+    match Client::connect(format!("{}:{}", host.address, host.port).parse().unwrap()).await {
+        Ok(client) => {
+            health_check_internal(&client).await.unwrap();
+            Ok(ApiResponse {
+                code: StatusCode::OK,
+                data: String::from("all good"),
+            })
+        }
+        Err(e) => {
+            tracing::error!("Failed to health check host: {}, error:{}", host_id, e);
+            Err(ServerError::Internal)
+        }
+    }
+}
+
+async fn health_check_internal(client: &Client) -> Result<String, String> {
+    let response = client.clone().health_check(Request::new(())).await;
+    match response {
+        Ok(_) => Ok(String::from("OK")),
+        Err(e) => Err(String::from("Failed")),
+    }
 }
