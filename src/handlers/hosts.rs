@@ -1,5 +1,4 @@
 use std::collections::BTreeMap;
-use std::net::SocketAddr;
 
 use crate::handlers::ansible::AnsibleCommand;
 use crate::handlers::models::hosts::HostError;
@@ -127,7 +126,11 @@ pub async fn health_check(
 
     match Client::connect(format!("{}:{}", host.address, host.port).parse().unwrap()).await {
         Ok(client) => {
-            health_check_internal(&client).await.unwrap();
+            health_check_internal(&client).await.map_err(|e| {
+                tracing::error!("Failed to health check host: {}, error:{}", host_id, e);
+                ServerError::Internal
+            })?;
+
             Ok(ApiResponse {
                 code: StatusCode::OK,
                 data: String::from("all good"),
@@ -141,9 +144,12 @@ pub async fn health_check(
 }
 
 async fn health_check_internal(client: &Client) -> Result<String, String> {
-    let response = client.clone().health_check(Request::new(())).await;
+    let response = client.clone().health_check().await;
     match response {
         Ok(_) => Ok(String::from("OK")),
-        Err(e) => Err(String::from("Failed")),
+        Err(e) => {
+            tracing::error!("failed {}", e);
+            Err(String::from("Failed"))
+        }
     }
 }

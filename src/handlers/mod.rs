@@ -2,7 +2,13 @@ use std::convert::Infallible;
 
 use crate::env::Environment;
 
-use axum::{body::{Body, Bytes, Full}, extract::Extension, prelude::*, response::IntoResponse, routing::BoxRoute};
+use axum::{
+    body::{Body, Bytes, Full},
+    extract::Extension,
+    prelude::*,
+    response::IntoResponse,
+    routing::BoxRoute,
+};
 use http::{Response, StatusCode};
 use serde::Serialize;
 use serde_json::json;
