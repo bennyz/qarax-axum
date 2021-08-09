@@ -1,6 +1,8 @@
+use std::convert::Infallible;
+
 use crate::env::Environment;
 
-use axum::{body::Body, extract::Extension, prelude::*, response::IntoResponse, routing::BoxRoute};
+use axum::{body::{Body, Bytes, Full}, extract::Extension, prelude::*, response::IntoResponse, routing::BoxRoute};
 use http::{Response, StatusCode};
 use serde::Serialize;
 use serde_json::json;
@@ -19,6 +21,7 @@ pub mod vms;
 pub fn hosts() -> BoxRoute<Body> {
     route("/:id", get(hosts::get))
         .route("/:id/install", post(hosts::install))
+        .route("/:id/healthcheck", post(hosts::health_check))
         .route("/", get(hosts::list).post(hosts::add))
         .boxed()
 }
@@ -56,7 +59,10 @@ impl<T> IntoResponse for ApiResponse<T>
 where
     T: Send + Sync + Serialize,
 {
-    fn into_response(self) -> http::Response<Body> {
+    type Body = Full<Bytes>;
+    type BodyError = Infallible;
+
+    fn into_response(self) -> Response<Self::Body> {
         let mut response = response::Json(json!({
             "response": self.data,
         }))
@@ -81,7 +87,10 @@ pub enum ServerError {
 }
 
 impl IntoResponse for ServerError {
-    fn into_response(self) -> Response<Body> {
+    type Body = Full<Bytes>;
+    type BodyError = Infallible;
+
+    fn into_response(self) -> Response<Self::Body> {
         let code = match self {
             ServerError::Internal => StatusCode::INTERNAL_SERVER_ERROR,
             ServerError::Validation(_) => StatusCode::CONFLICT,
