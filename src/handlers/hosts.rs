@@ -121,7 +121,7 @@ pub async fn health_check(
         host
     } else {
         tracing::error!("Failed to find host: {}", host_id);
-        return Err(ServerError::Internal);
+        return Err(ServerError::Validation(host_id.to_string()));
     };
 
     match Client::connect(format!("{}:{}", host.address, host.port).parse().unwrap()).await {
