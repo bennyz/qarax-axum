@@ -2,7 +2,6 @@ use std::collections::BTreeMap;
 
 use crate::handlers::ansible::AnsibleCommand;
 use crate::handlers::models::hosts::HostError;
-use rpc::node::Status as NodeStatus;
 
 use super::models::hosts::{NewHost, Status};
 use super::rpc::client::Client;
@@ -10,7 +9,6 @@ use super::*;
 use axum::extract::{Json, Path};
 use models::hosts as host_model;
 use models::hosts::Host;
-use tonic::Request;
 
 pub async fn list(
     Extension(env): Extension<Environment>,
@@ -151,5 +149,61 @@ async fn health_check_internal(client: &Client) -> Result<String, String> {
             tracing::error!("failed {}", e);
             Err(String::from("Failed"))
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use dotenv::dotenv;
+    use sqlx::{migrate::MigrateDatabase, postgres, PgPool};
+    use tower::ServiceExt;
+
+    use crate::database;
+
+    async fn setup() -> anyhow::Result<PgPool> {
+        dotenv().ok();
+        let db_url = &dotenv::var("TEST_DATABASE_URL").expect("DATABASE_URL is not set!");
+        database::run_migrations(db_url).await.unwrap();
+        let pool = database::connect(&db_url).await?;
+
+        Ok(pool)
+    }
+
+    async fn teardown(pool: &PgPool) {
+        pool.close().await;
+        let db_url = &dotenv::var("TEST_DATABASE_URL").expect("DATABASE_URL is not set!");
+        postgres::Postgres::drop_database(db_url).await.unwrap();
+    }
+
+    #[tokio::test]
+    async fn test_add() {
+        let pool = setup().await.unwrap();
+        let env = Environment::new(pool.clone()).await.unwrap();
+        let app = app(env.clone());
+
+        let host = NewHost {
+            name: String::from("test_host"),
+            address: String::from("127.0.0.1"),
+            port: 8080,
+            host_user: String::from("root"),
+            password: String::from("pass"),
+        };
+
+        let response = app
+            .oneshot(
+                Request::builder()
+                    .method(http::Method::POST)
+                    .uri("/hosts")
+                    .header(http::header::CONTENT_TYPE, "application/json")
+                    .body(Body::from(json!(host).to_string()))
+                    .unwrap(),
+            )
+            .await
+            .unwrap();
+
+        assert_eq!(StatusCode::CREATED, response.status());
+
+        teardown(&env.db()).await;
     }
 }
