@@ -8,6 +8,7 @@ use axum::{
     prelude::*,
     response::IntoResponse,
     routing::BoxRoute,
+    AddExtensionLayer,
 };
 use http::{Response, StatusCode};
 use serde::Serialize;
@@ -23,6 +24,18 @@ mod models;
 pub mod rpc;
 pub mod storage;
 pub mod vms;
+
+pub fn app(env: Environment) -> BoxRoute<Body> {
+    route("/", get(|| async { "hello" }))
+        .nest("/hosts", hosts())
+        .nest("/storage", storage())
+        .nest("/drives", drives())
+        .nest("/kernels", kernels())
+        .nest("/vms", vms())
+        .layer(AddExtensionLayer::new(env))
+        .layer(tower_http::trace::TraceLayer::new_for_http())
+        .boxed()
+}
 
 pub fn hosts() -> BoxRoute<Body> {
     route("/:id", get(hosts::get))

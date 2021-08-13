@@ -1,4 +1,4 @@
-use axum::{prelude::*, AddExtensionLayer};
+use axum::prelude::*;
 use clap::Clap;
 use dotenv::dotenv;
 use std::{error::Error, net::SocketAddr};
@@ -37,19 +37,10 @@ async fn main() -> Result<(), Box<dyn Error>> {
     let pool = database::connect(db_url).await?;
     let environment = env::Environment::new(pool).await?;
 
-    let app = route("/", get(|| async { "hello" }))
-        .nest("/hosts", handlers::hosts())
-        .nest("/storage", handlers::storage())
-        .nest("/drives", handlers::drives())
-        .nest("/kernels", handlers::kernels())
-        .nest("/vms", handlers::vms())
-        .layer(AddExtensionLayer::new(environment))
-        .layer(tower_http::trace::TraceLayer::new_for_http());
-
     let addr = SocketAddr::from(([127, 0, 0, 1], args.port));
     tracing::info!("listening on {}", addr);
     axum::Server::bind(&addr)
-        .serve(app.into_make_service())
+        .serve(handlers::app(environment).into_make_service())
         .await?;
 
     Ok(())
