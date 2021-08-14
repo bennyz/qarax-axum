@@ -93,7 +93,7 @@ pub async fn install(
 
     extra_params.insert(
         String::from("local_node_path"),
-        dotenv::var("LOCAL_NODE_PATH").unwrap_or(String::from("")),
+        dotenv::var("LOCAL_NODE_PATH").unwrap_or_else(|_| String::from("")),
     );
 
     tokio::spawn(async move {
