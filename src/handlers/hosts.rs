@@ -65,12 +65,16 @@ pub async fn install(
     Extension(env): Extension<Environment>,
     Path(host_id): Path<Uuid>,
 ) -> Result<ApiResponse<String>, ServerError> {
-    let host = if let Ok(host) = host_model::by_id(env.db(), &host_id).await {
-        host
-    } else {
-        tracing::error!("Failed to find host: {}", host_id);
-        return Err(ServerError::Internal);
-    };
+    let host = host_model::by_id(env.db(), &host_id).await.map_err(|e| {
+        tracing::error!("Failed to find host: {}, error:{}", host_id, e);
+
+        match e {
+            HostError::Find(id, sqlx::Error::RowNotFound) => {
+                ServerError::EntityNotFound(id.to_string())
+            }
+            _ => ServerError::Internal,
+        }
+    })?;
 
     host_model::update_status(env.db(), host_id, Status::Installing)
         .await
@@ -82,8 +86,15 @@ pub async fn install(
     let mut extra_params = BTreeMap::new();
     extra_params.insert(String::from("ansible_password"), host.password.to_owned());
 
-    // TODO: find a better place for the version
-    extra_params.insert(String::from("fcversion"), String::from("0.24.5"));
+    extra_params.insert(
+        String::from("fcversion"),
+        dotenv::var("FC_VERSION").expect("FC_VERSION is not set!"),
+    );
+
+    extra_params.insert(
+        String::from("local_node_path"),
+        dotenv::var("LOCAL_NODE_PATH").unwrap_or(String::from("")),
+    );
 
     tokio::spawn(async move {
         let playbook = AnsibleCommand::new(

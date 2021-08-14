@@ -35,3 +35,4 @@ tonic-build = "0.5.1"
 [workspace]
 default-members = [".", "qarax-node"]
 members = [".", "qarax-node"]
+
