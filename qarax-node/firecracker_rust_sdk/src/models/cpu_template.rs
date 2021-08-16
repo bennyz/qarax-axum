@@ -17,7 +17,6 @@ pub enum CpuTemplate {
     C3,
     #[serde(rename = "T2")]
     T2,
-
 }
 
 impl ToString for CpuTemplate {
@@ -28,7 +27,3 @@ impl ToString for CpuTemplate {
         }
     }
 }
-
-
-
-

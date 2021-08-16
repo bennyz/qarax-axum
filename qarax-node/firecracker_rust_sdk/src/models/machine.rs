@@ -55,7 +55,13 @@ impl Machine {
     }
 
     pub async fn configure_boot_source(&self) -> Result<String> {
-        todo!()
+        let boot_source = serde_json::to_string(&self.boot_source)?;
+        tracing::info!("Sending boot_source with {}\n", boot_source);
+
+        Ok(self
+            .client
+            .request("/boot-source", Method::PUT, &boot_source.as_bytes())
+            .await?)
     }
 
     pub async fn configure_drive(&self) -> Result<String> {
@@ -66,9 +72,8 @@ impl Machine {
         todo!()
     }
 
-
     pub async fn start(&self) -> Result<String> {
-       todo!()
+        todo!()
     }
 
     pub async fn stop(&mut self) -> Result<()> {

@@ -10,8 +10,6 @@
 
 /// BalloonStats : Describes the balloon device statistics.
 
-
-
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct BalloonStats {
     /// Target number of pages the device aims to hold.
@@ -51,7 +49,10 @@ pub struct BalloonStats {
     #[serde(rename = "disk_caches", skip_serializing_if = "Option::is_none")]
     pub disk_caches: Option<i64>,
     /// The number of successful hugetlb page allocations in the guest.
-    #[serde(rename = "hugetlb_allocations", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "hugetlb_allocations",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub hugetlb_allocations: Option<i64>,
     /// The number of failed hugetlb page allocations in the guest.
     #[serde(rename = "hugetlb_failures", skip_serializing_if = "Option::is_none")]
@@ -60,7 +61,12 @@ pub struct BalloonStats {
 
 impl BalloonStats {
     /// Describes the balloon device statistics.
-    pub fn new(target_pages: i32, actual_pages: i32, target_mib: i32, actual_mib: i32) -> BalloonStats {
+    pub fn new(
+        target_pages: i32,
+        actual_pages: i32,
+        target_mib: i32,
+        actual_mib: i32,
+    ) -> BalloonStats {
         BalloonStats {
             target_pages,
             actual_pages,
@@ -79,5 +85,3 @@ impl BalloonStats {
         }
     }
 }
-
-

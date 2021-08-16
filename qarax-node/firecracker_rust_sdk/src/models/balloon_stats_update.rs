@@ -10,8 +10,6 @@
 
 /// BalloonStatsUpdate : Update the statistics polling interval, with the first statistics update scheduled immediately. Statistics cannot be turned on/off after boot.
 
-
-
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct BalloonStatsUpdate {
     /// Interval in seconds between refreshing statistics.
@@ -27,5 +25,3 @@ impl BalloonStatsUpdate {
         }
     }
 }
-
-

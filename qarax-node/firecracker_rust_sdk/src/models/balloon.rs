@@ -10,8 +10,6 @@
 
 /// Balloon : Balloon device descriptor.
 
-
-
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct Balloon {
     /// Target balloon size in MiB.
@@ -21,7 +19,10 @@ pub struct Balloon {
     #[serde(rename = "deflate_on_oom")]
     pub deflate_on_oom: bool,
     /// Interval in seconds between refreshing statistics. A non-zero value will enable the statistics. Defaults to 0.
-    #[serde(rename = "stats_polling_interval_s", skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "stats_polling_interval_s",
+        skip_serializing_if = "Option::is_none"
+    )]
     pub stats_polling_interval_s: Option<i32>,
 }
 
@@ -35,5 +36,3 @@ impl Balloon {
         }
     }
 }
-
-

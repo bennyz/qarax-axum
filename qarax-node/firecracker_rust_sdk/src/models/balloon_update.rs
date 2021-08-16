@@ -10,8 +10,6 @@
 
 /// BalloonUpdate : Balloon device descriptor.
 
-
-
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct BalloonUpdate {
     /// Target balloon size in MiB.
@@ -22,10 +20,6 @@ pub struct BalloonUpdate {
 impl BalloonUpdate {
     /// Balloon device descriptor.
     pub fn new(amount_mib: i32) -> BalloonUpdate {
-        BalloonUpdate {
-            amount_mib,
-        }
+        BalloonUpdate { amount_mib }
     }
 }
-
-
