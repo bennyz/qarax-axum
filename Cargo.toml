@@ -8,14 +8,14 @@ edition = "2018"
 
 [dependencies]
 axum = { git = "https://github.com/tokio-rs/axum" }
-sqlx = { version = "0.5.5", features = ["runtime-tokio-rustls", "postgres", "uuid", "json", "migrate", "macros", "offline"] }
+sqlx = { version = "0.5.6", features = ["runtime-tokio-rustls", "postgres", "uuid", "json", "migrate", "macros", "offline"] }
 uuid = { version = "0.8.2", features = ["serde", "v4"] }
 serde = { version = "1.0.127", features = ["derive"] }
 serde_json = "1.0.66"
 anyhow = "1.0.43"
 thiserror = "1.0.26"
 tracing = "0.1.26"
-tracing-subscriber = "0.2.19"
+tracing-subscriber = "0.2.20"
 dotenv = "0.15.0"
 strum = "0.21.0"
 strum_macros = "0.21.1"
