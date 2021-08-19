@@ -5,9 +5,10 @@ use crate::env::Environment;
 use axum::{
     body::{Body, Bytes, Full},
     extract::Extension,
-    prelude::*,
-    response::IntoResponse,
-    routing::BoxRoute,
+    handler::{get, post},
+    response::{self, IntoResponse},
+    route,
+    routing::{BoxRoute, RoutingDsl},
     AddExtensionLayer,
 };
 use http::{Response, StatusCode};

@@ -167,6 +167,7 @@ async fn health_check_internal(client: &Client) -> Result<String, String> {
 mod tests {
     use super::*;
     use dotenv::dotenv;
+    use http::Request;
     use sqlx::{migrate::MigrateDatabase, postgres, PgPool};
     use tower::ServiceExt;
 

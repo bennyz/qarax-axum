@@ -1,4 +1,4 @@
-use axum::prelude::*;
+use axum::routing::RoutingDsl;
 use clap::Clap;
 use dotenv::dotenv;
 use std::{error::Error, net::SocketAddr};
