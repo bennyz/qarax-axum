@@ -7,9 +7,8 @@ use axum::{
     extract::Extension,
     handler::{get, post},
     response::{self, IntoResponse},
-    route,
-    routing::{BoxRoute, RoutingDsl},
-    AddExtensionLayer,
+    routing::BoxRoute,
+    AddExtensionLayer, Router,
 };
 use http::{Response, StatusCode};
 use serde::Serialize;
@@ -26,8 +25,9 @@ pub mod rpc;
 pub mod storage;
 pub mod vms;
 
-pub fn app(env: Environment) -> BoxRoute<Body> {
-    route("/", get(|| async { "hello" }))
+pub fn app(env: Environment) -> Router<BoxRoute> {
+    Router::new()
+        .route("/", get(|| async { "hello" }))
         .nest("/hosts", hosts())
         .nest("/storage", storage())
         .nest("/drives", drives())
@@ -38,34 +38,39 @@ pub fn app(env: Environment) -> BoxRoute<Body> {
         .boxed()
 }
 
-pub fn hosts() -> BoxRoute<Body> {
-    route("/:id", get(hosts::get))
+pub fn hosts() -> Router<BoxRoute> {
+    Router::new()
+        .route("/:id", get(hosts::get))
         .route("/:id/install", post(hosts::install))
         .route("/:id/healthcheck", post(hosts::health_check))
         .route("/", get(hosts::list).post(hosts::add))
         .boxed()
 }
 
-pub fn storage() -> BoxRoute<Body> {
-    route("/:id", get(storage::get))
+pub fn storage() -> Router<BoxRoute> {
+    Router::new()
+        .route("/:id", get(storage::get))
         .route("/", get(storage::list).post(storage::add))
         .boxed()
 }
 
-pub fn drives() -> BoxRoute<Body> {
-    route("/:id", get(drives::get))
+pub fn drives() -> Router<BoxRoute> {
+    Router::new()
+        .route("/:id", get(drives::get))
         .route("/", get(drives::list).post(drives::add))
         .boxed()
 }
 
-pub fn kernels() -> BoxRoute<Body> {
-    route("/:id", get(kernels::get))
+pub fn kernels() -> Router<BoxRoute> {
+    Router::new()
+        .route("/:id", get(kernels::get))
         .route("/", get(kernels::list).post(kernels::add))
         .boxed()
 }
 
-pub fn vms() -> BoxRoute<Body> {
-    route("/:id", get(vms::get))
+pub fn vms() -> Router<BoxRoute> {
+    Router::new()
+        .route("/:id", get(vms::get))
         .route("/", get(vms::list).post(vms::add))
         .boxed()
 }
