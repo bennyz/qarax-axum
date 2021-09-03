@@ -98,7 +98,7 @@ checksum = "cdb031dd78e28731d87d56cc8ffef4a8f36ca26c38fe2de700543e627f8a464a"
 [[package]]
 name = "axum"
 version = "0.2.3"
-source = "git+https://github.com/tokio-rs/axum#39c5cc24fa36bcf228469af2e5404a2385b582d2"
+source = "git+https://github.com/tokio-rs/axum#835432b5c9a14c0713efddef9e4b25887634f513"
 dependencies = [
  "async-trait",
  "bitflags",
@@ -113,7 +113,7 @@ dependencies = [
  "serde_json",
  "serde_urlencoded",
  "sync_wrapper",
- "tokio 1.10.1",
+ "tokio 1.11.0",
  "tokio-util",
  "tower",
  "tower-http",
@@ -172,9 +172,9 @@ checksum = "c4872d67bab6358e59559027aa3b9157c53d9358c51423c17554809a8858e0f8"
 
 [[package]]
 name = "cc"
-version = "1.0.69"
+version = "1.0.70"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e70cc2f62c6ce1868963827bd677764c62d07c3d9a3e1fb1177ee1a9ab199eb2"
+checksum = "d26a6ce4b6a484fa3edb70f7efa6fc430fd2b87285fe8b84304fd0936faa0dc0"
 
 [[package]]
 name = "cfg-if"
@@ -417,7 +417,7 @@ dependencies = [
  "serde_json",
  "serde_yaml",
  "thiserror",
- "tokio 1.10.1",
+ "tokio 1.11.0",
  "tokio-core",
  "tracing",
  "tracing-appender",
@@ -609,7 +609,7 @@ dependencies = [
  "http",
  "indexmap",
  "slab",
- "tokio 1.10.1",
+ "tokio 1.11.0",
  "tokio-util",
  "tracing",
 ]
@@ -718,7 +718,7 @@ dependencies = [
  "itoa",
  "pin-project-lite",
  "socket2",
- "tokio 1.10.1",
+ "tokio 1.11.0",
  "tower-service",
  "tracing",
  "want",
@@ -732,7 +732,7 @@ checksum = "bbb958482e8c7be4bc3cf272a766a2b0bf1a6755e7a6ae777f017a31d11b13b1"
 dependencies = [
  "hyper",
  "pin-project-lite",
- "tokio 1.10.1",
+ "tokio 1.11.0",
  "tokio-io-timeout",
 ]
 
@@ -746,7 +746,7 @@ dependencies = [
  "hex",
  "hyper",
  "pin-project",
- "tokio 1.10.1",
+ "tokio 1.11.0",
 ]
 
 [[package]]
@@ -1292,7 +1292,7 @@ dependencies = [
  "strum",
  "strum_macros",
  "thiserror",
- "tokio 1.10.1",
+ "tokio 1.11.0",
  "tonic",
  "tonic-build",
  "tonic-health",
@@ -1310,7 +1310,7 @@ dependencies = [
  "clap",
  "firecracker_rust_sdk",
  "prost",
- "tokio 1.10.1",
+ "tokio 1.11.0",
  "tonic",
  "tonic-build",
  "tonic-health",
@@ -1749,7 +1749,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "14302b678d9c76b28f2e60115211e25e0aabc938269991745a169753dc00e35c"
 dependencies = [
  "once_cell",
- "tokio 1.10.1",
+ "tokio 1.11.0",
  "tokio-rustls",
 ]
 
@@ -1922,9 +1922,9 @@ dependencies = [
 
 [[package]]
 name = "tokio"
-version = "1.10.1"
+version = "1.11.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "92036be488bb6594459f2e03b60e42df6f937fe6ca5c5ffdcb539c6b84dc40f5"
+checksum = "b4efe6fc2395938c8155973d7be49fe8d03a843726e285e100a8a383cc0154ce"
 dependencies = [
  "autocfg",
  "bytes 1.1.0",
@@ -2019,7 +2019,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "90c49f106be240de154571dd31fbe48acb10ba6c6dd6f6517ad603abffa42de9"
 dependencies = [
  "pin-project-lite",
- "tokio 1.10.1",
+ "tokio 1.11.0",
 ]
 
 [[package]]
@@ -2059,7 +2059,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "bc6844de72e57df1980054b38be3a9f4702aba4858be64dd700181a8a6d0e1b6"
 dependencies = [
  "rustls",
- "tokio 1.10.1",
+ "tokio 1.11.0",
  "webpki",
 ]
 
@@ -2071,7 +2071,7 @@ checksum = "7b2f3f698253f03119ac0102beaa64f67a67e08074d03a22d18784104543727f"
 dependencies = [
  "futures-core",
  "pin-project-lite",
- "tokio 1.10.1",
+ "tokio 1.11.0",
 ]
 
 [[package]]
@@ -2171,7 +2171,7 @@ dependencies = [
  "futures-sink",
  "log",
  "pin-project-lite",
- "tokio 1.10.1",
+ "tokio 1.11.0",
 ]
 
 [[package]]
@@ -2195,7 +2195,7 @@ dependencies = [
  "pin-project",
  "prost",
  "prost-derive",
- "tokio 1.10.1",
+ "tokio 1.11.0",
  "tokio-stream",
  "tokio-util",
  "tower",
@@ -2226,7 +2226,7 @@ dependencies = [
  "async-stream",
  "bytes 1.1.0",
  "prost",
- "tokio 1.10.1",
+ "tokio 1.11.0",
  "tokio-stream",
  "tonic",
  "tonic-build",
@@ -2244,7 +2244,7 @@ dependencies = [
  "pin-project",
  "rand",
  "slab",
- "tokio 1.10.1",
+ "tokio 1.11.0",
  "tokio-stream",
  "tokio-util",
  "tower-layer",
@@ -2386,9 +2386,9 @@ checksum = "59547bce71d9c38b83d9c0e92b6066c4253371f15005def0c30d9657f50c7642"
 
 [[package]]
 name = "typenum"
-version = "1.13.0"
+version = "1.14.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "879f6906492a7cd215bfa4cf595b600146ccfac0c79bcbd1f3000162af5e8b06"
+checksum = "b63708a265f51345575b27fe43f9500ad611579e764c79edbc2037b1121959ec"
 
 [[package]]
 name = "unicode-bidi"
