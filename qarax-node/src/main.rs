@@ -34,7 +34,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .await;
 
     tracing::info!("Starting on port {}", args.port);
-    let addr = SocketAddr::from(([127, 0, 0, 1], args.port));
+    let addr = SocketAddr::from(([0, 0, 0, 0], args.port));
 
     Server::builder()
         .tcp_keepalive(Some(Duration::from_secs(60)))
