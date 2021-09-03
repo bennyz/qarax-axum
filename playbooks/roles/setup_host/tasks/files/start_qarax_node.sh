@@ -1,4 +1,3 @@
-#disown
-!/bin/bash -e
+#!/bin/bash -e
 nohup ./qarax-node &
 
