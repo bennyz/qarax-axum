@@ -50,3 +50,71 @@ pub async fn get(
         code: StatusCode::CREATED,
     })
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use dotenv::dotenv;
+    use http::{Request, StatusCode};
+    use hyper::Body;
+    use serde_json::json;
+    use sqlx::{migrate::MigrateDatabase, postgres, PgPool};
+    use tower::ServiceExt;
+
+    use crate::{
+        database,
+        env::Environment,
+        handlers::{
+            app,
+            models::storage::{StorageConfig, StorageType},
+        },
+    };
+
+    async fn setup() -> anyhow::Result<PgPool> {
+        dotenv().ok();
+        let db_url = &dotenv::var("TEST_DATABASE_URL").expect("DATABASE_URL is not set!");
+        database::run_migrations(db_url).await.unwrap();
+        let pool = database::connect(&db_url).await?;
+
+        Ok(pool)
+    }
+
+    async fn teardown(pool: &PgPool) {
+        pool.close().await;
+        let db_url = &dotenv::var("TEST_DATABASE_URL").expect("DATABASE_URL is not set!");
+        postgres::Postgres::drop_database(db_url).await.unwrap();
+    }
+
+    #[tokio::test]
+    async fn test_add() {
+        let pool = setup().await.unwrap();
+        let env = Environment::new(pool.clone()).await.unwrap();
+        let app = app(env.clone());
+
+        let host = NewStorage {
+            name: "test_storage".to_owned(),
+            storage_type: StorageType::Local,
+            config: StorageConfig {
+                host_id: None,
+                path: Some("/tmp/test_storage".to_owned()),
+                pool_name: None,
+            },
+        };
+
+        let response = app
+            .oneshot(
+                Request::builder()
+                    .method(http::Method::POST)
+                    .uri("/storage")
+                    .header(http::header::CONTENT_TYPE, "application/json")
+                    .body(Body::from(json!(host).to_string()))
+                    .unwrap(),
+            )
+            .await
+            .unwrap();
+
+        assert_eq!(StatusCode::CREATED, response.status());
+
+        teardown(&env.db()).await;
+    }
+}
