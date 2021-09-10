@@ -60,7 +60,7 @@ impl Machine {
 
         Ok(self
             .client
-            .request("/boot-source", Method::PUT, &boot_source.as_bytes())
+            .request("/boot-source", Method::PUT, boot_source.as_bytes())
             .await?)
     }
 
