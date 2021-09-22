@@ -50,6 +50,7 @@ resource "libvirt_domain" "domain-centos" {
 
   network_interface {
     network_name = "default"
+    wait_for_lease = true
   }
 
   console {
