@@ -5,7 +5,6 @@ use std::{error::Error, net::SocketAddr};
 mod database;
 mod env;
 mod handlers;
-mod routes;
 
 #[derive(Clap, Debug)]
 #[clap(
