@@ -1,0 +1,230 @@
+{
+  "format_version": "0.2",
+  "terraform_version": "1.0.7",
+  "values": {
+    "root_module": {
+      "resources": [
+        {
+          "address": "data.template_file.network_config",
+          "mode": "data",
+          "type": "template_file",
+          "name": "network_config",
+          "provider_name": "registry.terraform.io/hashicorp/template",
+          "schema_version": 0,
+          "values": {
+            "filename": null,
+            "id": "b36a1372ce4ea68b514354202c26c0365df9a17f25cd5acdeeaea525cd913edc",
+            "rendered": "version: 2\nethernets:\n  ens3:\n    dhcp4: true\n",
+            "template": "version: 2\nethernets:\n  ens3:\n    dhcp4: true\n",
+            "vars": null
+          },
+          "sensitive_values": {}
+        },
+        {
+          "address": "data.template_file.user_data",
+          "mode": "data",
+          "type": "template_file",
+          "name": "user_data",
+          "provider_name": "registry.terraform.io/hashicorp/template",
+          "schema_version": 0,
+          "values": {
+            "filename": null,
+            "id": "64e82373785bffbecf74fdb95506f3ce4e9da2140bde2290fa88348fc7da5fac",
+            "rendered": "#cloud-config\nssh_pwauth: True\nchpasswd:\n  list: |\n     root:centos\n  expire: False\n",
+            "template": "#cloud-config\nssh_pwauth: True\nchpasswd:\n  list: |\n     root:centos\n  expire: False\n",
+            "vars": null
+          },
+          "sensitive_values": {}
+        },
+        {
+          "address": "libvirt_cloudinit_disk.commoninit",
+          "mode": "managed",
+          "type": "libvirt_cloudinit_disk",
+          "name": "commoninit",
+          "provider_name": "registry.terraform.io/dmacvicar/libvirt",
+          "schema_version": 0,
+          "values": {
+            "id": "/home/benny/development/rust/qarax-axum/e2e/terraform/.cache/commoninit.iso;e055ba7d-5011-4b2d-8138-ae0cdec6b37c",
+            "meta_data": "",
+            "name": "commoninit.iso",
+            "network_config": "version: 2\nethernets:\n  ens3:\n    dhcp4: true\n",
+            "pool": "centos",
+            "user_data": "#cloud-config\nssh_pwauth: True\nchpasswd:\n  list: |\n     root:centos\n  expire: False\n"
+          },
+          "sensitive_values": {},
+          "depends_on": [
+            "data.template_file.network_config",
+            "data.template_file.user_data",
+            "libvirt_pool.centos"
+          ]
+        },
+        {
+          "address": "libvirt_domain.domain-centos",
+          "mode": "managed",
+          "type": "libvirt_domain",
+          "name": "domain-centos",
+          "provider_name": "registry.terraform.io/dmacvicar/libvirt",
+          "schema_version": 0,
+          "values": {
+            "arch": "x86_64",
+            "autostart": null,
+            "boot_device": [],
+            "cloudinit": "/home/benny/development/rust/qarax-axum/e2e/terraform/.cache/commoninit.iso;e055ba7d-5011-4b2d-8138-ae0cdec6b37c",
+            "cmdline": null,
+            "console": [
+              {
+                "source_host": "127.0.0.1",
+                "source_path": "",
+                "source_service": "0",
+                "target_port": "0",
+                "target_type": "serial",
+                "type": "pty"
+              },
+              {
+                "source_host": "127.0.0.1",
+                "source_path": "",
+                "source_service": "0",
+                "target_port": "1",
+                "target_type": "virtio",
+                "type": "pty"
+              }
+            ],
+            "coreos_ignition": null,
+            "cpu": null,
+            "description": "",
+            "disk": [
+              {
+                "block_device": "",
+                "file": "",
+                "scsi": false,
+                "url": "",
+                "volume_id": "/home/benny/development/rust/qarax-axum/e2e/terraform/.cache/centos-qcow2",
+                "wwn": ""
+              }
+            ],
+            "emulator": "/usr/bin/qemu-system-x86_64",
+            "filesystem": [],
+            "firmware": "",
+            "fw_cfg_name": "opt/com.coreos/config",
+            "graphics": [
+              {
+                "autoport": true,
+                "listen_address": "127.0.0.1",
+                "listen_type": "address",
+                "type": "spice"
+              }
+            ],
+            "id": "7730fc8a-d9fa-4bbf-a240-a41457900186",
+            "initrd": "",
+            "kernel": "",
+            "machine": "pc",
+            "memory": 1512,
+            "metadata": null,
+            "name": "centos-terraform",
+            "network_interface": [
+              {
+                "addresses": [
+                  "192.168.122.103"
+                ],
+                "bridge": "",
+                "hostname": "",
+                "mac": "52:54:00:F6:B3:8C",
+                "macvtap": "",
+                "network_id": "5a829163-c968-4ee7-b154-adf5fb24ba34",
+                "network_name": "default",
+                "passthrough": "",
+                "vepa": "",
+                "wait_for_lease": true
+              }
+            ],
+            "nvram": [],
+            "qemu_agent": false,
+            "running": true,
+            "timeouts": null,
+            "vcpu": 1,
+            "video": [],
+            "xml": []
+          },
+          "sensitive_values": {
+            "boot_device": [],
+            "console": [
+              {},
+              {}
+            ],
+            "disk": [
+              {}
+            ],
+            "filesystem": [],
+            "graphics": [
+              {}
+            ],
+            "network_interface": [
+              {
+                "addresses": [
+                  false
+                ]
+              }
+            ],
+            "nvram": [],
+            "video": [],
+            "xml": []
+          },
+          "depends_on": [
+            "data.template_file.network_config",
+            "data.template_file.user_data",
+            "libvirt_cloudinit_disk.commoninit",
+            "libvirt_pool.centos",
+            "libvirt_volume.centos-qcow2"
+          ]
+        },
+        {
+          "address": "libvirt_pool.centos",
+          "mode": "managed",
+          "type": "libvirt_pool",
+          "name": "centos",
+          "provider_name": "registry.terraform.io/dmacvicar/libvirt",
+          "schema_version": 0,
+          "values": {
+            "allocation": 36203036672,
+            "available": null,
+            "capacity": 315926315008,
+            "id": "9205ef02-0f3c-48c9-9286-f78ac56d0210",
+            "name": "centos",
+            "path": "/home/benny/development/rust/qarax-axum/e2e/terraform/.cache",
+            "type": "dir",
+            "xml": []
+          },
+          "sensitive_values": {
+            "xml": []
+          }
+        },
+        {
+          "address": "libvirt_volume.centos-qcow2",
+          "mode": "managed",
+          "type": "libvirt_volume",
+          "name": "centos-qcow2",
+          "provider_name": "registry.terraform.io/dmacvicar/libvirt",
+          "schema_version": 0,
+          "values": {
+            "base_volume_id": null,
+            "base_volume_name": null,
+            "base_volume_pool": null,
+            "format": "qcow2",
+            "id": "/home/benny/development/rust/qarax-axum/e2e/terraform/.cache/centos-qcow2",
+            "name": "centos-qcow2",
+            "pool": "centos",
+            "size": 10737418240,
+            "source": "https://cloud.centos.org/centos/8-stream/x86_64/images/CentOS-Stream-GenericCloud-8-20210603.0.x86_64.qcow2",
+            "xml": []
+          },
+          "sensitive_values": {
+            "xml": []
+          },
+          "depends_on": [
+            "libvirt_pool.centos"
+          ]
+        }
+      ]
+    }
+  }
+}

@@ -168,6 +168,7 @@ mod tests {
     use super::*;
     use dotenv::dotenv;
     use http::Request;
+    use hyper::Body;
     use sqlx::{migrate::MigrateDatabase, postgres, PgPool};
     use tower::ServiceExt;
 
