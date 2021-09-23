@@ -22,7 +22,7 @@ pub struct Args {
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args = Args::parse();
-    if std::env::var("RUST_LOG").is_err() {
+    if std::env::var_os("RUST_LOG").is_none() {
         std::env::set_var("RUST_LOG", "qarax-node=debug")
     }
 

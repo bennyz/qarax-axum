@@ -98,7 +98,7 @@ checksum = "cdb031dd78e28731d87d56cc8ffef4a8f36ca26c38fe2de700543e627f8a464a"
 [[package]]
 name = "axum"
 version = "0.2.5"
-source = "git+https://github.com/tokio-rs/axum#48401f2c8dbe65e5419cdd9f6f15e2885ca0e9df"
+source = "git+https://github.com/tokio-rs/axum#f3c155bf5bbbfb60979db9129a3cc8c6ed41dbbe"
 dependencies = [
  "async-trait",
  "bitflags",
@@ -772,9 +772,9 @@ dependencies = [
 
 [[package]]
 name = "instant"
-version = "0.1.10"
+version = "0.1.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "bee0328b1209d157ef001c94dd85b4f8f64139adb0eac2659f4b08382b2f474d"
+checksum = "716d3d89f35ac6a34fd0eed635395f4c3b76fa889338a4632e5231a8684216bd"
 dependencies = [
  "cfg-if 1.0.0",
 ]

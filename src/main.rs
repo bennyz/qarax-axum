@@ -23,7 +23,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
     let args = Args::parse();
     dotenv().ok();
 
-    if std::env::var("RUST_LOG").is_err() {
+    if std::env::var_os("RUST_LOG").is_none() {
         std::env::set_var("RUST_LOG", "qarax=debug,tower_http=debug")
     }
 
