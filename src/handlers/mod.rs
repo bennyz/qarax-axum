@@ -3,7 +3,7 @@ use std::convert::Infallible;
 use crate::env::Environment;
 
 use axum::{
-    body::{Body, Bytes, Full},
+    body::{Bytes, Full},
     extract::Extension,
     handler::{get, post},
     response::{self, IntoResponse},
