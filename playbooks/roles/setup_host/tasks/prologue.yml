@@ -3,32 +3,3 @@
     user: root
     state: present
     key: "{{ lookup('file', lookup('env','HOME') + '/.ssh/id_ed25519.pub') }}"
-
-- name: Enable PowerTools
-  command: yum config-manager --set-enabled powertools
-
-- name: Install epel
-  dnf:
-    name: epel-release
-    state: latest
-
-- name: Install openstack
-  dnf:
-    name: centos-release-openstack-wallaby
-    state: latest
-
-- name: Install openvswitch
-  dnf:
-    name: openvswitch
-    state: latest
-
-- name: Install libibverbs
-  dnf:
-    name: libibverbs
-    state: latest
-
-- name: Enable openvswitch service
-  ansible.builtin.systemd:
-    name: openvswitch
-    enabled: yes
-    state: started

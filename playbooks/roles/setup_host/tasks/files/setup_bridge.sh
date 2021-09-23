@@ -7,12 +7,10 @@ IP_WITH_CIDR=$(ip addr show dev $INTERFACE | grep "inet " | awk '{print $2}')
 ROUTE=$(ip route list dev $INTERFACE | grep -v default | cut -f 1 -d ' ')
 DEFAULT_ROUTE=$(ip route list dev $INTERFACE | grep default | awk '{print $3}')
 
-ovs-vsctl add-br $BRIDGE
-ovs-vsctl add-port $BRIDGE $INTERFACE
-ip addr flush dev $INTERFACE
-ip addr add $IP_WITH_CIDR brd + dev $BRIDGE
-ip link set $BRIDGE up
-ip route add default via $DEFAULT_ROUTE
-ip route add $ROUTE dev $BRIDGE proto kernel scope link src $IP
+nmcli con add ifname $BRIDGE type bridge con-name $BRIDGE
+nmcli con add type bridge-slave ifname $INTERFACE master $BRIDGE
+nmcli con down "System $INTERFACE"
+nmcli con mod $BRIDGE ipv4.addresses $IP_WITH_CIDR
+nmcli con up $BRIDGE
 
 exit 0
