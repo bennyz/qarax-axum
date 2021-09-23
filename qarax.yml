@@ -22,15 +22,18 @@ components:
         id:
           format: uuid
           type: string
+          readOnly: true
         name:
           type: string
         password:
           type: string
+          writeOnly: true
         port:
           format: int32
           type: integer
         status:
           type: string
+          readOnly: true
     Error:
       type: object
       properties:
