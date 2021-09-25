@@ -2,30 +2,38 @@ import json
 import logging
 import subprocess
 
-logger = logging.getLogger(__name__)
+log = logging.getLogger(__name__)
+
 
 class Terraform:
-    def __init__(self):
-        pass
+    def __init__(self, workdir=None):
+        self.workdir = workdir
 
-    def apply(self, workdir=None):
-        stderr = subprocess.PIPE
-        stdout = subprocess.PIPE
+    def apply(self):
+        out = self._cmd('apply', '-auto-approve', '-no-color')
 
-        p = subprocess.Popen(['terraform', f'-chdir={workdir}', 'apply', '-auto-approve', '-no-color'], stdout=stdout, stderr=stderr)
-        out, err = p.communicate()
-        logging.info(out)
-        logging.error(err)
-        # TODO: throw exception when error
-        return out, err
+        return out
 
-    def show(self, workdir=None):
-        stderr = subprocess.PIPE
-        stdout = subprocess.PIPE
+    def show(self):
+        data = self._cmd('show', '-json', '-no-color')
 
-        p = subprocess.Popen(['terraform', f'-chdir={workdir}', 'show', '-json', '-no-color'], stdout=stdout, stderr=stderr)
-        out, err = p.communicate()
-        logging.info(out)
-        logging.error(err)
+        return json.loads(data)
 
-        return json.loads(out)
+    def _cmd(self, executeable, *args):
+        cmd = ['terraform']
+        if self.workdir:
+            cmd.append(f'-chdir={self.workdir}')
+
+        cmd.append(executeable)
+        cmd.extend(args)
+
+        proc = subprocess.Popen(
+            cmd,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE)
+        stdout, stderr = proc.communicate()
+        if stderr:
+            log.error(stderr.decode('utf-8'))
+            raise Exception(stderr.decode('utf-8'))
+
+        return stdout.decode('utf-8')
