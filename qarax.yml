@@ -13,6 +13,12 @@ tags:
   - name: Hosts
 components:
   schemas:
+    HostList:
+      properties:
+        response:
+          type: array
+          items:
+            $ref: '#/components/schemas/Host'
     InstallResponse:
       properties:
         response:
@@ -63,9 +69,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Host'
+                type: HostList
         default:
           description: unexpected error
           content:
