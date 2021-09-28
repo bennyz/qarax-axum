@@ -10,14 +10,14 @@ class Terraform:
         self.workdir = workdir
 
     def apply(self):
-        out = self._cmd('apply', '-auto-approve', '-no-color')
+        out, err = self._cmd('apply', '-auto-approve', '-no-color')
 
-        return out
+        return out, err
 
     def show(self):
-        data = self._cmd('show', '-json', '-no-color')
+        data, err = self._cmd('show', '-json', '-no-color')
 
-        return json.loads(data)
+        return json.loads(data), err
 
     def _cmd(self, executeable, *args):
         cmd = ['terraform']
@@ -32,8 +32,5 @@ class Terraform:
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE)
         stdout, stderr = proc.communicate()
-        if stderr:
-            log.error(stderr.decode('utf-8'))
-            raise Exception(stderr.decode('utf-8'))
 
-        return stdout.decode('utf-8')
+        return stdout.decode('utf-8'), stderr.decode('utf-8')

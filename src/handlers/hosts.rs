@@ -142,7 +142,7 @@ pub async fn health_check(
 
             Ok(ApiResponse {
                 code: StatusCode::OK,
-                data: String::from("all good"),
+                data: String::from("ok"),
             })
         }
         Err(e) => {
