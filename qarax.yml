@@ -19,7 +19,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Host'
-    InstallResponse:
+    StringResponse:
       properties:
         response:
           type: string
@@ -149,7 +149,34 @@ paths:
           content:
             application/json:
               schema:
-                type: InstallResponse
+                type: StringResponse
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  '/hosts/{hostId}/healthcheck':
+    post:
+      operationId: healthcheck
+      summary: Healthcehck a host
+      description: Runs healthcheck on a host, currently just ensures gRPC connectivity
+      tags:
+        - Hosts
+      parameters:
+        - name: hostId
+          in: path
+          description: ID of host
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: StringResponse
         default:
           description: unexpected error
           content:
