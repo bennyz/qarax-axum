@@ -1,3 +1,4 @@
+import functools
 import logging
 import os
 
@@ -12,7 +13,7 @@ import util
 log = logging.getLogger(__name__)
 
 
-@pytest.fixture
+@pytest.fixture(scope="module", autouse=True)
 def tf():
     tf = terraform.Terraform(workdir=os.path.join(
         os.path.abspath(os.path.dirname(__file__)), 'terraform'))
@@ -20,7 +21,7 @@ def tf():
     yield tf
 
 
-@pytest.fixture
+@pytest.fixture(scope="module", autouse=True)
 def vm(tf):
     _, err = tf.apply()
     if err:
@@ -35,7 +36,7 @@ def vm(tf):
     yield vm_json
 
 
-@pytest.fixture
+@pytest.fixture(scope="module", autouse=True)
 def vm_ip(vm):
     log.info("Getting VM IP address")
     vm_ip = None
@@ -51,7 +52,34 @@ def vm_ip(vm):
     yield vm_ip
 
 
-@pytest.fixture
+@pytest.fixture(scope="module", autouse=True)
+def host_config(vm_ip):
+    import time
+
+    host_config = {
+        "name": "e2e-test-host" + str(time.time()),
+        "address": vm_ip,
+        "username": "root",
+        "password": "centos",
+        "port": 50051,
+    }
+
+    yield host_config
+
+
+@pytest.fixture(scope="module", autouse=True)
+def vm_drives(vm_ip, host_config):
+    kernel = "kernels/vmlinux.bin"
+    rootfs = "rootfs/bionic.rootfs.ext4"
+    base_url = "https://s3.amazonaws.com/spec.ccfc.min/img/quickstart_guide/x86_64/"
+
+    util.run_parallel_jobs([functools.partial(util.download_file_to_host, url=base_url + kernel, host=vm_ip,
+                                              username=host_config['username'], password=host_config['password'], dest_path=f'/root/{kernel.split("/")[1]}'),
+                            functools.partial(util.download_file_to_host, url=base_url + rootfs, host=vm_ip,
+                                              username=host_config['username'], password=host_config['password'], dest_path=f'/root/{rootfs.split("/")[1]}')])
+
+
+@ pytest.fixture(scope="module", autouse=True)
 def qarax_configuration():
     configuration = qarax.Configuration(
         host="http://localhost:3000"
@@ -60,22 +88,22 @@ def qarax_configuration():
     yield configuration
 
 
-@pytest.fixture
+@ pytest.fixture(scope="module", autouse=True)
 def api_client(qarax_configuration):
     api_client = qarax.ApiClient(qarax_configuration)
 
     yield api_client
 
 
-@pytest.mark.order(1)
-def test_install_host(api_client, vm_ip):
+@ pytest.mark.order(1)
+def test_install_host(api_client, vm_ip, host_config):
     api_instance = hosts_api.HostsApi(api_client)
     host = Host(
-        address=vm_ip,
-        host_user="root",
-        name="hostato",
-        password="centos",
-        port=50051,
+        name=host_config['name'],
+        address=host_config['address'],
+        host_user=host_config['username'],
+        password=host_config['password'],
+        port=host_config['port'],
     )
 
     def get_host_status():
