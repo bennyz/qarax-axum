@@ -1,7 +1,5 @@
 import logging
 import os
-import time
-from functools import lru_cache
 
 import pytest
 import qarax
@@ -9,6 +7,7 @@ from qarax.api import hosts_api
 from qarax.model.host import Host
 
 import terraform
+import util
 
 log = logging.getLogger(__name__)
 
@@ -79,6 +78,10 @@ def test_install_host(api_client, vm_ip):
         port=50051,
     )
 
+    def get_host_status():
+        host = api_instance.get_host(host_id)['response']
+        return host['status']
+
     try:
         log.info("Adding host to database")
         api_response = api_instance.add_host(host)
@@ -86,14 +89,9 @@ def test_install_host(api_client, vm_ip):
         if host_id != 'error':
             log.info("Installing host '%s'", host_id)
             api_instance.install_host(host_id)
-            while True:
-                host = api_instance.get_host(host_id)['response']
+            assert util.wait_for_status(
+                get_host_status, status='up', timeout=120, step=5)
 
-                # TODO: handle failed installation
-                if host['status'] == 'up':
-                    log.info("Host '%s' installed", host_id)
-                    break
-                time.sleep(3)
     except qarax.ApiException as e:
         log.error("Exception when calling HostsApi->add_host: %s\n" % e)
 
