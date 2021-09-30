@@ -9,6 +9,7 @@ use super::*;
 use axum::extract::{Json, Path};
 use models::hosts as host_model;
 use models::hosts::Host;
+use sqlx::PgPool;
 
 pub async fn list(
     Extension(env): Extension<Environment>,
@@ -31,7 +32,7 @@ pub async fn add(
 ) -> Result<ApiResponse<Uuid>, ServerError> {
     let host_id = host_model::add(env.db(), &host).await.map_err(|e| {
         tracing::error!("Failed to add host {}", e);
-        ServerError::Internal
+        ServerError::Validation(e.to_string())
     })?;
 
     Ok(ApiResponse {
@@ -122,6 +123,21 @@ pub async fn install(
     })
 }
 
+pub async fn find_running_host(pool: &PgPool) -> Result<Host, ServerError> {
+    let hosts = host_model::by_status(pool, host_model::Status::Up)
+        .await
+        .map_err(|e| {
+            tracing::error!("Failed to a suitable host, error:{}", e);
+            ServerError::Internal
+        })?;
+
+    if hosts.is_empty() {
+        return Err(ServerError::EntityNotFound(String::from("host")));
+    }
+
+    Ok(hosts[0].clone())
+}
+
 pub async fn health_check(
     Extension(env): Extension<Environment>,
     Path(host_id): Path<Uuid>,
@@ -139,6 +155,8 @@ pub async fn health_check(
                 tracing::error!("Failed to health check host: {}, error:{}", host_id, e);
                 ServerError::Internal
             })?;
+
+            env.clients().write().await.insert(host_id, client);
 
             Ok(ApiResponse {
                 code: StatusCode::OK,

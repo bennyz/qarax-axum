@@ -30,7 +30,7 @@ pub async fn add(
 
     Ok(ApiResponse {
         data: storage_id,
-        code: StatusCode::CREATED,
+        code: StatusCode::OK,
     })
 }
 

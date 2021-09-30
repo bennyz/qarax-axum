@@ -1,5 +1,61 @@
 {
   "db": "PostgreSQL",
+  "07bb841146b9ad3a3817a75aa4a33ae5927ab8e1b89788b8d2c9adbb6a4642a5": {
+    "query": "\nSELECT id, name, address, port, status as \"status: _\", host_user, password\nFROM hosts\nWHERE status = $1\n        ",
+    "describe": {
+      "columns": [
+        {
+          "ordinal": 0,
+          "name": "id",
+          "type_info": "Uuid"
+        },
+        {
+          "ordinal": 1,
+          "name": "name",
+          "type_info": "Varchar"
+        },
+        {
+          "ordinal": 2,
+          "name": "address",
+          "type_info": "Varchar"
+        },
+        {
+          "ordinal": 3,
+          "name": "port",
+          "type_info": "Int4"
+        },
+        {
+          "ordinal": 4,
+          "name": "status: _",
+          "type_info": "Varchar"
+        },
+        {
+          "ordinal": 5,
+          "name": "host_user",
+          "type_info": "Varchar"
+        },
+        {
+          "ordinal": 6,
+          "name": "password",
+          "type_info": "Varchar"
+        }
+      ],
+      "parameters": {
+        "Left": [
+          "Text"
+        ]
+      },
+      "nullable": [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ]
+    }
+  },
   "1e626c395ad653ea32126a7caaec3f0e7b63f529d435b2c758d9ad28964a464b": {
     "query": "\nSELECT id, name, storage_id\nFROM kernels\nWHERE id = $1\n        ",
     "describe": {
@@ -86,8 +142,64 @@
       ]
     }
   },
-  "5f8aa6a59903358f2af2b416e7748f65f056ab6bbf1459f1bb3e6769fecd64fc": {
-    "query": "\nINSERT INTO drives (name, status, readonly, rootfs, storage_id)\nVALUES ( $1, $2, $3, $4, $5)\nRETURNING id\n        ",
+  "4057db1b975235f473b4c90e719e2880e723a88e27f996752a9dbc7d79298cfa": {
+    "query": "\nSELECT id, name, status as \"status: _\", readonly, rootfs, storage_id, cache_type as \"cache_type: _\"\nFROM drives\nWHERE id = $1\n        ",
+    "describe": {
+      "columns": [
+        {
+          "ordinal": 0,
+          "name": "id",
+          "type_info": "Uuid"
+        },
+        {
+          "ordinal": 1,
+          "name": "name",
+          "type_info": "Varchar"
+        },
+        {
+          "ordinal": 2,
+          "name": "status: _",
+          "type_info": "Varchar"
+        },
+        {
+          "ordinal": 3,
+          "name": "readonly",
+          "type_info": "Bool"
+        },
+        {
+          "ordinal": 4,
+          "name": "rootfs",
+          "type_info": "Bool"
+        },
+        {
+          "ordinal": 5,
+          "name": "storage_id",
+          "type_info": "Uuid"
+        },
+        {
+          "ordinal": 6,
+          "name": "cache_type: _",
+          "type_info": "Varchar"
+        }
+      ],
+      "parameters": {
+        "Left": [
+          "Uuid"
+        ]
+      },
+      "nullable": [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ]
+    }
+  },
+  "6245b372df1d167da1982c3b5849afc6b4e9d6e5d60863501d1a11f7c72fce47": {
+    "query": "\nINSERT INTO drives (name, status, readonly, rootfs, storage_id, cache_type)\nVALUES ( $1, $2, $3, $4, $5, $6)\nRETURNING id\n        ",
     "describe": {
       "columns": [
         {
@@ -102,7 +214,8 @@
           "Varchar",
           "Bool",
           "Bool",
-          "Uuid"
+          "Uuid",
+          "Varchar"
         ]
       },
       "nullable": [
@@ -138,8 +251,8 @@
       ]
     }
   },
-  "80cbecf089cb483c225eb79c4284a460ff34ff87fbb069cccecc2e657ea2e63a": {
-    "query": "\nSELECT id, name, status as \"status: _\", readonly, rootfs, storage_id\nFROM drives\n        ",
+  "7b66b5735ca0c7eed38124f7061cfa81c72ba1b69158ddb34554e0be2efa3869": {
+    "query": "\nSELECT id, name, status as \"status: _\", readonly, rootfs, storage_id, cache_type as \"cache_type: _\"\nFROM drives\n        ",
     "describe": {
       "columns": [
         {
@@ -171,12 +284,18 @@
           "ordinal": 5,
           "name": "storage_id",
           "type_info": "Uuid"
+        },
+        {
+          "ordinal": 6,
+          "name": "cache_type: _",
+          "type_info": "Varchar"
         }
       ],
       "parameters": {
         "Left": []
       },
       "nullable": [
+        false,
         false,
         false,
         false,
@@ -334,56 +453,6 @@
         ]
       },
       "nullable": [
-        false
-      ]
-    }
-  },
-  "c0a9ef210ceae146c0b80eecfc7178303cfde203602d61a35b959a8db5554ec5": {
-    "query": "\nSELECT id, name, status as \"status: _\", readonly, rootfs, storage_id \nFROM drives\nWHERE id = $1\n        ",
-    "describe": {
-      "columns": [
-        {
-          "ordinal": 0,
-          "name": "id",
-          "type_info": "Uuid"
-        },
-        {
-          "ordinal": 1,
-          "name": "name",
-          "type_info": "Varchar"
-        },
-        {
-          "ordinal": 2,
-          "name": "status: _",
-          "type_info": "Varchar"
-        },
-        {
-          "ordinal": 3,
-          "name": "readonly",
-          "type_info": "Bool"
-        },
-        {
-          "ordinal": 4,
-          "name": "rootfs",
-          "type_info": "Bool"
-        },
-        {
-          "ordinal": 5,
-          "name": "storage_id",
-          "type_info": "Uuid"
-        }
-      ],
-      "parameters": {
-        "Left": [
-          "Uuid"
-        ]
-      },
-      "nullable": [
-        false,
-        false,
-        false,
-        false,
-        false,
         false
       ]
     }

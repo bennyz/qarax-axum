@@ -26,6 +26,7 @@ pub struct NewHost {
 #[sqlx(rename_all = "lowercase")]
 #[sqlx(type_name = "varchar")]
 #[serde(rename_all = "lowercase")]
+#[strum(serialize_all = "lowercase")]
 pub enum Status {
     Unknown,
     Down,
@@ -47,6 +48,9 @@ pub enum HostError {
 
     #[error("Can't update host: {0}, error: {1}")]
     Updated(Uuid, sqlx::Error),
+
+    #[error("{0}, error: {1}")]
+    Other(String, sqlx::Error),
 }
 
 pub async fn list(pool: &PgPool) -> Result<Vec<Host>, HostError> {
@@ -99,6 +103,24 @@ WHERE id = $1
     .map_err(|e| HostError::Find(*host_id, e))?;
 
     Ok(host)
+}
+
+pub async fn by_status(pool: &PgPool, status: Status) -> Result<Vec<Host>, HostError> {
+    tracing::info!("status {}", status.to_string());
+    let hosts = sqlx::query_as!(
+        Host,
+        r#"
+SELECT id, name, address, port, status as "status: _", host_user, password
+FROM hosts
+WHERE status = $1
+        "#,
+        status.to_string()
+    )
+    .fetch_all(pool)
+    .await
+    .map_err(|e| HostError::Other(String::from("Couldn't find host"), e))?;
+
+    Ok(hosts)
 }
 
 pub async fn update_status(pool: &PgPool, host_id: Uuid, status: Status) -> anyhow::Result<bool> {

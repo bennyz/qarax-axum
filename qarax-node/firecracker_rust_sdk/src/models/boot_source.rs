@@ -25,9 +25,9 @@ pub struct BootSource {
 
 impl BootSource {
     /// Boot source descriptor.
-    pub fn new(kernel_image_path: String) -> BootSource {
+    pub fn new(boot_args: Option<String>, kernel_image_path: String) -> BootSource {
         BootSource {
-            boot_args: None,
+            boot_args,
             initrd_path: None,
             kernel_image_path,
         }

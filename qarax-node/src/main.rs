@@ -1,12 +1,12 @@
-mod vmm_service;
+mod vm;
 
-use crate::vmm_service::VmmService;
+use vm::vmm_service::VmmService;
 
 use clap::Clap;
 use std::net::SocketAddr;
 use std::time::Duration;
 use tonic::transport::Server;
-use vmm_service::node::node_server::NodeServer;
+use vm::node::node_server::NodeServer;
 
 #[derive(Clap, Debug)]
 #[clap(
@@ -39,7 +39,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     Server::builder()
         .tcp_keepalive(Some(Duration::from_secs(60)))
         .add_service(health_service)
-        .add_service(NodeServer::new(vmm_service::VmmService::default()))
+        .add_service(NodeServer::new(VmmService::default()))
         .serve(addr)
         .await?;
 

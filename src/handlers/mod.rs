@@ -72,6 +72,7 @@ pub fn vms() -> Router<BoxRoute> {
     Router::new()
         .route("/:id", get(vms::get))
         .route("/", get(vms::list).post(vms::add))
+        .route("/:id/start", post(vms::start))
         .boxed()
 }
 

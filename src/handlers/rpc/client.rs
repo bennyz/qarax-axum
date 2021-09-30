@@ -22,7 +22,7 @@ impl Client {
         })
     }
 
-    pub async fn health_check(self) -> Result<(), tonic::Status> {
+    pub async fn health_check(&self) -> Result<(), tonic::Status> {
         let mut client = HealthClient::connect(format!(
             "http://{}:{}",
             self.address.ip(),
@@ -37,5 +37,13 @@ impl Client {
 
         client.check(request).await?;
         Ok(())
+    }
+
+    pub async fn start_vm(
+        &self,
+        request: impl tonic::IntoRequest<VmConfig>,
+    ) -> Result<tonic::Response<VmConfig>, tonic::Status> {
+        let response = self.client.write().await.start_vm(request).await?;
+        Ok(response)
     }
 }
