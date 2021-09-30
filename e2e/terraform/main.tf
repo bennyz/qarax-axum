@@ -45,6 +45,9 @@ resource "libvirt_domain" "domain-centos" {
   name   = "centos-terraform"
   memory = "1512"
   vcpu   = 1
+  cpu {
+    mode = "host-passthrough"
+  }
 
   cloudinit = libvirt_cloudinit_disk.commoninit.id
 
